@@ -3,11 +3,11 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const refs = {
-    galleryContainer: document.querySelector('.gallery'),
+const x = {
     searchForm: document.querySelector('.search-form'),
-    toTopBtn: document.querySelector('.to-top'),
+    galleryContainer: document.querySelector('.gallery'),
     wrapper: document.querySelector('.wrapper'),
+    toTopBtn: document.querySelector('.top-btn'),
 };
 
 const imagesApiService = new ImagesApiService();
@@ -18,8 +18,8 @@ const optionsForObserver = {
 };
 const observer = new IntersectionObserver(onEntry, optionsForObserver);
 
-refs.searchForm.addEventListener('submit', onSearch);
-refs.toTopBtn.addEventListener('click', onTopScroll);
+x.searchForm.addEventListener('submit', onSearch);
+x.toTopBtn.addEventListener('click', onTopScroll);
 
 window.addEventListener('scroll', onScrollToTopBtn);
 
@@ -41,19 +41,19 @@ function onSearch(e) {
             return erorrQuery();
         }
 
-        observer.observe(refs.wrapper);
+        observer.observe(x.wrapper);
         imagesApiService.incrementLoadedHits(hits);
         createGalleryMarkup(hits);
         accessQuery(totalHits);
         gallery.refresh();
 
         if (hits.length === totalHits) {
-            observer.unobserve(refs.wrapper);
+            observer.unobserve(x.wrapper);
             endOfSearch();
         }
     });
 
-    observer.unobserve(refs.wrapper);
+    observer.unobserve(x.wrapper);
 }
 
 function onEntry(entries) {
@@ -64,7 +64,7 @@ function onEntry(entries) {
                 .then(({ hits, totalHits }) => {
                     imagesApiService.incrementLoadedHits(hits);
                     if (totalHits <= imagesApiService.loadedHits) {
-                        observer.unobserve(refs.wrapper);
+                        observer.unobserve(x.wrapper);
                         endOfSearch();
                     }
 
@@ -92,7 +92,7 @@ function erorrQuery() {
 }
 
 function clearGelleryContainer() {
-    refs.galleryContainer.innerHTML = '';
+    x.galleryContainer.innerHTML = '';
 }
 
 function createGalleryMarkup(images) {
@@ -133,7 +133,7 @@ function createGalleryMarkup(images) {
         })
         .join('');
 
-    refs.galleryContainer.insertAdjacentHTML('beforeend', markup);
+    x.galleryContainer.insertAdjacentHTML('beforeend', markup);
 }
 
 function onScrollToTopBtn() {
@@ -141,8 +141,8 @@ function onScrollToTopBtn() {
     const pageOffset = window.pageYOffset;
 
     pageOffset > offsetTrigger
-        ? refs.toTopBtn.classList.remove('is-hidden')
-        : refs.toTopBtn.classList.add('is-hidden');
+        ? x.toTopBtn.classList.remove('is-hidden')
+        : x.toTopBtn.classList.add('is-hidden');
 }
 
 function onTopScroll() {
@@ -153,7 +153,7 @@ function onTopScroll() {
 }
 
 function smoothScrollGallery() {
-    const { height } = refs.galleryContainer.firstElementChild.getBoundingClientRect();
+    const { height } = x.galleryContainer.firstElementChild.getBoundingClientRect();
 
     window.scrollBy({
         top: height * 2,
